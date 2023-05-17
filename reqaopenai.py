@@ -9,11 +9,15 @@ logger = logging.getLogger('OpenAIAPI')
 
 
 class AutoText:
-    HEAD = {
-        "Authorization": "Bearer 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"
-    }
 
-    def __init__(self, text_source: str = 'openai'):
+    def __init__(self, text_source: str = 'openai', token=''):
+        if token == '':
+            with open('config.json', 'r') as f:
+                config = json.load(f)
+            token = config['openAI']['token']
+        self.HEAD = {
+        "Authorization": f"Bearer {token}"
+    }
         if text_source == 'openai':
             self.base_url = "https://api.openai.com/"
         else:

@@ -1,19 +1,18 @@
-from reqaopenai import AutoText
-from time import sleep
-from multiprocessing import Pipe, Process
-
 import logging
+from multiprocessing import Pipe, Process
+from time import sleep
+
+from reqaopenai import AutoText
 
 logging.basicConfig(level=logging.INFO)
 
 
 class ChatBot:
-
     DEFAULT_CONFIG = [
         {"role": "system", "content": "try to give short answer"}
     ]
 
-    def __init__(self, name:str, output='response.txt'):
+    def __init__(self, name: str, output='response.txt'):
         self.at = AutoText()
         self.name = name
         self.output = output
@@ -80,6 +79,3 @@ if __name__ == "__main__":
     cb2.communicate(main_conn)
 
     pass
-
-
-

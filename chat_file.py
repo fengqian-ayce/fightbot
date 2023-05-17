@@ -1,6 +1,7 @@
-from reqaopenai import AutoText
-from time import sleep
 from threading import Thread
+from time import sleep
+
+from reqaopenai import AutoText
 
 
 class ChatBot:

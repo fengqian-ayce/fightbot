@@ -1,9 +1,9 @@
+import json
+import logging
+from copy import deepcopy
+
 import requests
 from requests.exceptions import RequestException
-import json
-from copy import deepcopy
-import logging
-
 
 logger = logging.getLogger('OpenAIAPI')
 
@@ -16,8 +16,8 @@ class AutoText:
                 config = json.load(f)
             token = config['openAI']['token']
         self.HEAD = {
-        "Authorization": f"Bearer {token}"
-    }
+            "Authorization": f"Bearer {token}"
+        }
         if text_source == 'openai':
             self.base_url = "https://api.openai.com/"
         else:

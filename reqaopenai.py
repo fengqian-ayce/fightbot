@@ -95,7 +95,7 @@ class AutoText:
             "model": "gpt-3.5-turbo",
             "messages": messages + [message]
         }
-        # logger.info(payload)
+        logger.info(payload)
 
         res = self._make_request(url, method='POST', headers=headers, data=json.dumps(payload))
 

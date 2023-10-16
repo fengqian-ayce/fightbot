@@ -30,6 +30,14 @@ class ChatBot:
     def respond(self, chat):
         res = self.at.chat(chat, self.conversation)
         return res['message']['content']
+    
+    def add_response(self, chat, delay=1):
+        res = self.respond(chat)
+        self.logger.debug("responding...")
+        self.logger.info(res)
+        self.conversation.append(res)
+        sleep(delay)
+        return res
 
     def communicate(self, pipe: Pipe, delay=1):
         while True:
@@ -65,17 +73,21 @@ if __name__ == "__main__":
     cb1 = ChatBot('BigGov')
     cb1.create_role(cb1_content)
 
-    main_conn, cb_conn = Pipe()
-    cb1_proc = Process(target=cb1.communicate, args=(cb_conn,), daemon=True)
-    cb1_proc.start()
+    # main_conn, cb_conn = Pipe()
+    # cb1_proc = Process(target=cb1.communicate, args=(cb_conn,), daemon=True)
+    # cb1_proc.start()
 
     sleep(1)
 
-    main_conn.send('please change my view')
+    # main_conn.send('please change my view')
 
     cb2 = ChatBot('SmallGov')
     cb2.create_role(cb2_content)
 
-    cb2.communicate(main_conn)
+    # cb2.communicate(main_conn)
 
-    pass
+    res2 = cb2.add_response('please change my view')
+    while True:
+        res1 = cb1.add_response(res2)
+        sleep(1)
+        res2 = cb2.add_response(res1)

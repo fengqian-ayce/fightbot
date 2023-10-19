@@ -29,15 +29,16 @@ class ChatBot:
 
     def respond(self, chat):
         res = self.at.chat(chat, self.conversation)
-        return res['message']['content']
+        return res['message']
     
     def add_response(self, chat, delay=1):
         res = self.respond(chat)
         self.logger.debug("responding...")
-        self.logger.info(res)
+        self.logger.info(res['content'])
         self.conversation.append(res)
+        self.logger.info(self.conversation)
         sleep(delay)
-        return res
+        return res['content']
 
     def communicate(self, pipe: Pipe, delay=1):
         while True:
@@ -64,7 +65,7 @@ if __name__ == "__main__":
             "content": "please act like you are attending public debating. Your strength is making the argument emotional. the topic is: which one is better, big government or small government. You support big government."},
         {
             "role": "user",
-            "content": "small goverment is better, try to change my mind"}
+            "content": "small government is better, try to change my mind"}
     ]
 
     cb2_content = [{"role": "system",

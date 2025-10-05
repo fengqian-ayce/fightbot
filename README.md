@@ -15,7 +15,9 @@ FightBot creates autonomous debates between two AI chatbots with opposing viewpo
 - **Real-time Conversation**: Bots respond to each other in real-time with live output
 - **File-based Communication**: Alternative file-based communication system for asynchronous debates
 - **Flexible Bot Personas**: Assign names and personalities to each debating bot
-- **Comprehensive Logging**: Monitor debate progress and conversation flow
+- **Comprehensive Logging**: All activities logged to temporary files with timestamps
+- **Log Management**: Built-in utilities to view, search, and manage debate logs
+- **Per-Round Logging**: Each debate session creates a separate temporary log file
 - **Flexible AI Backend**: Built on OpenAI's GPT models with easy configuration
 - **Graceful Interruption**: Stop debates anytime with Ctrl+C
 
@@ -23,11 +25,18 @@ FightBot creates autonomous debates between two AI chatbots with opposing viewpo
 
 ```
 fightbot/
-├── chatbot.py          # Main ChatBot class with debate functionality
-├── chat_file.py        # File-based chatbot implementation
-├── reqaopenai.py       # OpenAI API wrapper and utilities
-├── __init__.py         # Package initialization
-└── README.md           # This file
+├── chatbot.py              # Main ChatBot class with debate functionality
+├── bot_factory.py          # Bot creation factory with personality management
+├── bot_personalities.json  # Configuration file for bot personalities and styles
+├── debate_topics.json      # Predefined debate topics with categories and difficulty
+├── topic_manager.py        # Standalone topic management utility
+├── chat_file.py           # File-based chatbot implementation
+├── reqaopenai.py          # OpenAI API wrapper and utilities
+├── config.json            # OpenAI API configuration
+├── example.py             # Example script demonstrating features
+├── log_viewer.py          # Utility for viewing and managing debate logs
+├── __init__.py            # Package initialization
+└── README.md              # This file
 ```
 
 ## Installation
@@ -54,6 +63,27 @@ pip install requests
 
 ## Usage
 
+### Quick Start
+
+Try these commands to get started:
+
+```bash
+# Start a debate with interactive mode selection
+python chatbot.py
+
+# Show help information
+python chatbot.py help
+
+# Show all available personalities and debate styles
+python example.py personalities
+
+# Run a quick demo with predefined bots
+python example.py demo
+
+# See custom personality creation
+python example.py custom
+```
+
 ### Interactive Debate Setup
 
 Run the main script for an interactive debate experience:
@@ -62,27 +92,60 @@ Run the main script for an interactive debate experience:
 python chatbot.py
 ```
 
-The system will prompt you to enter:
-- Debate topic
-- First position 
-- Opposing position
+The system will first ask you to choose an input mode:
+
+#### **1. File Mode** 
+Choose from predefined topics stored in `debate_topics.json`:
+- Quick selection from curated debate topics
+- Topics include positions, categories, and difficulty levels
+- Great for structured debates on popular issues
+
+#### **2. Interactive Mode**
+Enter your own custom topic and positions:
+- Complete freedom to create any debate topic
+- Option to save custom topics to the file for future use
+- Perfect for unique or specialized debate subjects
+
+#### **3. Browse Mode**
+Advanced topic exploration with filtering and search:
+- Browse by category (Technology, Environment, Healthcare, etc.)
+- Filter by difficulty (Beginner, Intermediate, Advanced)
+- Search topics by keywords
+- View detailed topic descriptions
+
+After selecting your mode and topic, the system will prompt you for:
 - Bot names (optional)
+- Bot personalities (from 8 available options)
+- Debate style (formal, casual, oxford, town_hall)
 - Maximum rounds (optional)
 
 ### Programmatic Debate Setup
 
 ```python
-from chatbot import create_debate_bots, start_debate
+from bot_factory import BotFactory
+from chatbot import start_debate
 
-# Create bots for any topic
+# Create factory and list available options
+factory = BotFactory()
+print("Available personalities:", list(factory.list_personalities().keys()))
+print("Available styles:", list(factory.list_debate_styles().keys()))
+
+# Create bots for any topic with specific personalities
 topic = "Should artificial intelligence be regulated?"
 position1 = "AI should be heavily regulated"
 position2 = "AI should remain largely unregulated"
 
-bot1, bot2 = create_debate_bots(topic, position1, position2, "Regulator", "FreemarketAI")
+bot1, bot2 = factory.create_debate_pair(
+    topic, position1, position2, 
+    "Regulator", "FreemarketAI",
+    personality1="logical",     # Uses facts and data
+    personality2="contrarian",  # Challenges popular opinions
+    debate_style="formal"       # Formal debate format
+)
 
-# Start the debate with optional round limit
-start_debate(bot1, bot2, max_rounds=5)
+# Start the debate with appropriate opening
+opening_prompt = factory.get_opening_prompt("formal")
+start_debate(bot1, bot2, initial_prompt=opening_prompt, max_rounds=5)
 ```
 
 ### Manual Configuration
@@ -154,6 +217,60 @@ response = at.chat("What's the weather like?", messages)
 
 ## Configuration
 
+### Bot Personalities
+
+The system includes 8 pre-configured bot personalities in `bot_personalities.json`:
+
+1. **Emotional**: Makes passionate, emotional arguments with personal stories
+2. **Logical**: Uses facts, data, and logical reasoning
+3. **Balanced**: Mixed approach attacking opponent's points while explaining own position
+4. **Aggressive**: Directly challenges opponents with strong rhetoric
+5. **Diplomatic**: Uses respectful language while finding common ground
+6. **Contrarian**: Enjoys challenging popular opinions and finding argument flaws
+7. **Academic**: Uses scholarly language and theoretical frameworks
+8. **Populist**: Appeals to common people with simple, relatable language
+
+### Debate Topics
+
+The system includes 10 predefined debate topics in `debate_topics.json` covering various categories:
+
+**Categories Available:**
+- **Technology**: AI regulation, social media, cryptocurrency
+- **Environment**: Climate vs economy, nuclear energy
+- **Healthcare**: Universal healthcare systems
+- **Workplace**: Remote work, gig economy
+- **Science**: Space exploration, genetic engineering
+- **Finance**: Traditional vs crypto banking
+
+**Difficulty Levels:**
+- **Beginner**: Simple topics with clear sides (remote work, social media)
+- **Intermediate**: Balanced complexity (AI regulation, healthcare, space)
+- **Advanced**: Complex topics requiring expertise (climate policy, nuclear energy, genetics)
+
+### Debate Styles
+
+Four debate formats are available:
+
+- **Formal**: Structured debate with formal opening statements
+- **Casual**: Conversational but substantive discussion
+- **Oxford**: Oxford Union style with formal language
+- **Town Hall**: Community meeting format for citizen concerns
+
+### Factory Configuration
+
+```python
+from bot_factory import BotFactory
+
+# Create custom personality
+factory = BotFactory()
+factory.add_personality(
+    personality_id="custom_id",
+    name="Custom Personality",
+    description="Your custom description",
+    system_prompt="Your custom system prompt template"
+)
+```
+
 ### ChatBot Parameters
 
 - `name`: Identifier for the bot (used in logging)
@@ -219,6 +336,78 @@ This project is open source. Please check the repository for license details.
 - Debates can run indefinitely - implement stopping conditions as needed
 - File-based communication allows for persistent debates across sessions
 
+## Logging System
+
+FightBot includes comprehensive logging that captures all debate activities in temporary files.
+
+### Automatic Logging
+
+Every debate session automatically creates:
+- **Temporary log directory**: Created in system temp folder with unique timestamp
+- **Debate log file**: Contains full conversation history, round-by-round
+- **Bot-specific logs**: Individual bot responses and internal processing
+- **Error logs**: API errors, connection issues, and other problems
+
+### Log Management Utility
+
+Use the `log_viewer.py` utility to manage debate logs:
+
+```bash
+# List all available logs
+python log_viewer.py list
+
+# View a specific log (use index from list command)
+python log_viewer.py view --index 1
+
+# View last 20 lines of a log
+python log_viewer.py view --index 1 --lines 20 --tail
+
+# Search for specific terms in logs
+python log_viewer.py search --term "climate change"
+
+# Clean up logs older than 7 days
+python log_viewer.py cleanup --days 7
+```
+
+### Topic Management Utility
+
+Use the standalone topic manager for advanced topic management:
+
+```bash
+# Interactive topic management
+python topic_manager.py
+
+# List all available topics
+python topic_manager.py list
+
+# View topics organized by category  
+python topic_manager.py categories
+
+# View topics organized by difficulty
+python topic_manager.py difficulties
+
+# Show help for topic manager
+python topic_manager.py help
+```
+
+### Log Format
+
+Logs use structured format with timestamps:
+```
+2025-10-03 22:23:30 - DebateSession - INFO - === DEBATE STARTED ===
+2025-10-03 22:23:30 - DebateSession - INFO - Bot 1: EconomyFirst
+2025-10-03 22:23:30 - DebateSession - INFO - Bot 2: GreenAdvocate
+2025-10-03 22:23:31 - DebateSession - INFO - ROUND 1 - EconomyFirst: Economic growth is essential...
+```
+
+### Log Types
+
+- **DebateSession**: Main debate flow and conversation
+- **ChatBot_[name]**: Individual bot responses and processing
+- **BotFactory**: Bot creation and personality loading
+- **OpenAIAPI**: API requests and responses (debug level)
+- **Console**: User interface and real-time feedback
+
 ## Troubleshooting
 
 **API Key Issues**: Ensure your `config.json` file is properly formatted and contains a valid OpenAI API key.
@@ -226,3 +415,5 @@ This project is open source. Please check the repository for license details.
 **Request Errors**: Check your internet connection and API key validity. The system includes error handling for common API issues.
 
 **File Permissions**: For file-based communication, ensure the application has read/write permissions in the working directory.
+
+**Log Files**: If you can't find debate logs, use `python log_viewer.py list` to see all available logs with their locations.

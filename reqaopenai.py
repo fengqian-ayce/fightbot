@@ -5,7 +5,9 @@ from copy import deepcopy
 import requests
 from requests.exceptions import RequestException
 
+# Setup logging for OpenAI API
 logger = logging.getLogger('OpenAIAPI')
+logger.setLevel(logging.INFO)
 
 
 class AutoText:
@@ -31,7 +33,11 @@ class AutoText:
         else:
             raise NotImplementedError(f'method {method} not supported yet')
         if res.status_code not in (200, 201):
-            raise RequestException(f'status code {res.status_code}, payload content {res.text}')
+            error_msg = f'HTTP {res.status_code}: {res.text}'
+            logger.error(f"API request failed: {error_msg}")
+            raise RequestException(error_msg)
+        
+        logger.debug(f"API request successful: {method} {url}")
         return res.text
 
     def list_models(self):
@@ -95,15 +101,37 @@ class AutoText:
             "model": "gpt-3.5-turbo",
             "messages": messages + [message]
         }
-        logger.info(payload)
+        logger.debug(f"Chat request payload: {len(payload['messages'])} messages")
+        logger.debug(f"User message: {content[:100]}..." if len(content) > 100 else f"User message: {content}")
 
         res = self._make_request(url, method='POST', headers=headers, data=json.dumps(payload))
+        logger.debug("Chat response received successfully")
 
         return json.loads(res)['choices'][0]
 
 
 if __name__ == '__main__':
+    # Setup logging for interactive mode
+    logging.basicConfig(level=logging.INFO)
+    test_logger = logging.getLogger("AutoTextTest")
+    
     at = AutoText()
+    test_logger.info("AutoText interactive mode started. Type 'quit' to exit.")
+    
     while True:
-        prompt = input()
-        print(at.completion(prompt))
+        try:
+            prompt = input("Enter prompt: ")
+            if prompt.lower() in ['quit', 'exit']:
+                test_logger.info("Exiting interactive mode")
+                break
+            
+            response = at.completion(prompt)
+            test_logger.info(f"Response generated for prompt: {prompt[:50]}...")
+            print(response)
+            
+        except KeyboardInterrupt:
+            test_logger.info("\nInterrupted by user")
+            break
+        except Exception as e:
+            test_logger.error(f"Error: {e}")
+            print(f"Error: {e}")

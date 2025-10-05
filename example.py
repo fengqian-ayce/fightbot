@@ -3,12 +3,27 @@
 Example script demonstrating the FightBot personality system.
 """
 
+import logging
+import tempfile
+import os
+from datetime import datetime
+
 from bot_factory import BotFactory, list_available_personalities, list_available_debate_styles
 from chatbot import start_debate
+
+# Setup logging for examples
+logging.basicConfig(
+    level=logging.INFO,
+    format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
+    datefmt='%Y-%m-%d %H:%M:%S'
+)
+
+example_logger = logging.getLogger("FightBotExample")
 
 
 def quick_demo():
     """Quick demo with predefined setup."""
+    example_logger.info("=== FightBot Quick Demo ===")
     print("=== FightBot Quick Demo ===")
     
     factory = BotFactory()
@@ -17,6 +32,10 @@ def quick_demo():
     topic = "Should governments prioritize economic growth or environmental protection?"
     position1 = "Economic growth should be the priority"
     position2 = "Environmental protection should be the priority"
+    
+    example_logger.info(f"Topic: {topic}")
+    example_logger.info(f"Position 1 (Populist): {position1}")
+    example_logger.info(f"Position 2 (Academic): {position2}")
     
     print(f"Topic: {topic}")
     print(f"Position 1 (Populist): {position1}")
@@ -40,18 +59,26 @@ def quick_demo():
 
 def personality_showcase():
     """Show all available personalities and their characteristics."""
+    example_logger.info("=== Available Bot Personalities ===")
     print("=== Available Bot Personalities ===")
     
     personalities = list_available_personalities()
     for i, (pid, info) in enumerate(personalities.items(), 1):
+        personality_details = f"{i}. {pid.upper()} - {info['name']}: {info['description']}"
+        example_logger.info(personality_details)
+        
         print(f"\n{i}. {pid.upper()}")
         print(f"   Name: {info['name']}")
         print(f"   Description: {info['description']}")
     
+    example_logger.info("=== Available Debate Styles ===")
     print("\n=== Available Debate Styles ===")
     
     styles = list_available_debate_styles()
     for i, (sid, info) in enumerate(styles.items(), 1):
+        style_details = f"{i}. {sid.upper()} - Opening: {info['opening_prompt']}, Format: {info['format']}"
+        example_logger.info(style_details)
+        
         print(f"\n{i}. {sid.upper()}")
         print(f"   Opening: {info['opening_prompt']}")
         print(f"   Format: {info['format']}")
@@ -59,6 +86,7 @@ def personality_showcase():
 
 def custom_personality_demo():
     """Demonstrate adding a custom personality."""
+    example_logger.info("=== Custom Personality Demo ===")
     print("=== Custom Personality Demo ===")
     
     factory = BotFactory()
@@ -86,6 +114,9 @@ def custom_personality_demo():
         debate_style="casual"
     )
     
+    example_logger.info(f"Created custom 'sarcastic' personality!")
+    example_logger.info(f"Topic: {topic}")
+    
     print(f"Created custom 'sarcastic' personality!")
     print(f"Topic: {topic}")
     
@@ -105,8 +136,10 @@ if __name__ == "__main__":
         elif sys.argv[1] == "custom":
             custom_personality_demo()
         else:
-            print("Usage: python example.py [demo|personalities|custom]")
+            example_logger.error("Invalid argument provided")
+        print("Usage: python example.py [demo|personalities|custom]")
     else:
+        example_logger.info("FightBot Example Script started")
         print("FightBot Example Script")
         print("Usage:")
         print("  python example.py demo         - Quick debate demo")

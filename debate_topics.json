@@ -1,0 +1,94 @@
+{
+  "debate_topics": [
+    {
+      "id": "ai_regulation",
+      "topic": "Should artificial intelligence be heavily regulated?",
+      "position1": "AI should be heavily regulated by governments",
+      "position2": "AI should remain largely unregulated to foster innovation",
+      "category": "Technology",
+      "difficulty": "intermediate",
+      "description": "A debate about the balance between AI safety and technological progress"
+    },
+    {
+      "id": "climate_vs_economy",
+      "topic": "Should governments prioritize environmental protection over economic growth?",
+      "position1": "Environmental protection should be the top priority",
+      "position2": "Economic growth should be prioritized to improve living standards",
+      "category": "Environment",
+      "difficulty": "advanced",
+      "description": "Classic debate between environmental sustainability and economic development"
+    },
+    {
+      "id": "universal_healthcare",
+      "topic": "Should all countries implement universal healthcare systems?",
+      "position1": "Universal healthcare is a fundamental right",
+      "position2": "Private healthcare systems are more efficient and innovative",
+      "category": "Healthcare",
+      "difficulty": "intermediate",
+      "description": "Debate about healthcare system models and accessibility"
+    },
+    {
+      "id": "social_media_regulation",
+      "topic": "Should social media platforms be regulated like traditional media?",
+      "position1": "Social media needs strict government regulation",
+      "position2": "Social media should remain self-regulated",
+      "category": "Technology",
+      "difficulty": "beginner",
+      "description": "Discussion about content moderation and free speech online"
+    },
+    {
+      "id": "remote_work",
+      "topic": "Is remote work better than traditional office work?",
+      "position1": "Remote work is the future of employment",
+      "position2": "In-person office work is more effective and collaborative",
+      "category": "Workplace",
+      "difficulty": "beginner",
+      "description": "Modern workplace debate accelerated by the pandemic"
+    },
+    {
+      "id": "nuclear_energy",
+      "topic": "Should nuclear energy be part of the clean energy transition?",
+      "position1": "Nuclear energy is essential for clean energy goals",
+      "position2": "Renewable energy can replace nuclear and fossil fuels",
+      "category": "Energy",
+      "difficulty": "advanced",
+      "description": "Technical debate about energy policy and environmental impact"
+    },
+    {
+      "id": "cryptocurrency",
+      "topic": "Should cryptocurrencies replace traditional banking systems?",
+      "position1": "Cryptocurrencies offer financial freedom and innovation",
+      "position2": "Traditional banking systems are more stable and secure",
+      "category": "Finance",
+      "difficulty": "intermediate",
+      "description": "Debate about the future of money and financial systems"
+    },
+    {
+      "id": "space_exploration",
+      "topic": "Should humanity prioritize space exploration over solving Earth's problems?",
+      "position1": "Space exploration is crucial for humanity's future",
+      "position2": "Resources should focus on Earth's pressing issues first",
+      "category": "Science",
+      "difficulty": "intermediate",
+      "description": "Philosophical debate about resource allocation and human priorities"
+    },
+    {
+      "id": "gig_economy",
+      "topic": "Is the gig economy better for workers than traditional employment?",
+      "position1": "Gig work provides flexibility and entrepreneurial opportunities",
+      "position2": "Traditional employment offers better security and benefits",
+      "category": "Workplace",
+      "difficulty": "beginner",
+      "description": "Debate about modern work arrangements and worker rights"
+    },
+    {
+      "id": "genetic_engineering",
+      "topic": "Should genetic engineering be used to enhance human capabilities?",
+      "position1": "Genetic enhancement could eliminate diseases and improve human potential",
+      "position2": "Genetic engineering poses ethical risks and could increase inequality",
+      "category": "Science",
+      "difficulty": "advanced",
+      "description": "Ethical debate about human genetic modification and enhancement"
+    }
+  ]
+}
